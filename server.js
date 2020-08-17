@@ -16,7 +16,28 @@ express()
   .use("/", express.static(__dirname + "/"))
 
   // exercise 1
+  .get("/:dbName/:collection", (req, res) => {
+    const { dbName, collection } = req.params;
+    getUsers(dbName, collection).then((data) => {
+      if (data.length > 0) {
+        res.status(200).json({ status: 200, data });
+      } else {
+        res.status(404).json({ status: 404, msg: "empty array" });
+      }
+    });
+  })
 
+  .post("/:dbName/:collection", async (req, res) => {
+    const data = req.body;
+    const { dbName, collection } = req.params;
+    console.log(dbName, collection);
+    try {
+      await addUser(dbName, collection, data);
+      res.status(201).json({ status: 201 });
+    } catch (err) {
+      res.status(400).json({ status: 400 });
+    }
+  })
   // exercise 2
 
   // handle 404s
